@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+    // No-op functions for demo mode
+    function saveProgress() {}
+    function loadUserData() {}
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Brain vs. The App - Interactive Demo</title>
@@ -2077,9 +2082,11 @@
         // Truth Reveal Function with haptic/visual effect - navigates to section 2
         function revealTheTruth() {
             const btn = document.getElementById('truthRevealBtn');
+            console.log('[DEBUG] revealTheTruth() called');
             
             // Mark that truth was revealed
             userData.truthRevealed = true;
+            console.log('[DEBUG] userData.truthRevealed set to true');
             saveProgress();
             updateNextButtonState();
             
@@ -2091,9 +2098,29 @@
                 navigator.vibrate([100, 50, 100, 50, 200]);
             }
             
-            // Wait for animation, then navigate to section 2
+            // Wait for animation, then force navigate to section 2 (bypass requirement check)
             setTimeout(() => {
-                nextSection();
+                console.log('[DEBUG] Switching to section 2');
+                // Hide current section
+                const currentSectionEl = document.querySelector(`[data-section="${currentSection}"]`);
+                if (currentSectionEl) {
+                    currentSectionEl.classList.remove('active');
+                    console.log('[DEBUG] Hid section', currentSection);
+                } else {
+                    console.log('[DEBUG] Could not find current section', currentSection);
+                }
+                currentSection = 2;
+                const section2El = document.querySelector(`[data-section="2"]`);
+                if (section2El) {
+                    section2El.classList.add('active');
+                    console.log('[DEBUG] Activated section 2');
+                } else {
+                    console.log('[DEBUG] Could not find section 2');
+                }
+                updateProgress();
+                updateNextButtonState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                saveProgress();
             }, 600);
         }
 
@@ -3459,14 +3486,22 @@
             const currentSectionEl = document.querySelector(`[data-section="${currentSection}"]`);
             if (!currentSectionEl) return;
             
-            const nextButtons = currentSectionEl.querySelectorAll('.button:not(.button-secondary)');
+            const nextButtons = currentSectionEl.querySelectorAll('.button:not(.button-secondary):not(#truthRevealBtn)');
+            // Always keep the truth reveal button enabled
+            const truthBtn = document.getElementById('truthRevealBtn');
+            if (truthBtn) {
+                truthBtn.classList.remove('locked');
+                truthBtn.disabled = false;
+            }
             const canProceed = checkSectionRequirements(currentSection);
-            
+
             nextButtons.forEach(btn => {
                 if (canProceed) {
                     btn.classList.remove('locked');
+                    btn.disabled = false;
                 } else {
                     btn.classList.add('locked');
+                    btn.disabled = true;
                 }
             });
         }
