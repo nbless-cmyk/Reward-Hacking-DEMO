@@ -1067,254 +1067,7 @@
             }
         }
 
-        /* Downward Spiral Animation Styles */
-        .spiral-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px;
-            border-radius: 20px;
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-        }
 
-        .spiral-title {
-            text-align: center;
-            color: white;
-            font-size: 2em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .spiral-instruction {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { 
-                background: rgba(255, 255, 255, 0.15);
-                box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-            }
-            50% { 
-                background: rgba(255, 255, 255, 0.25);
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-            }
-        }
-
-        .spiral-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .spiral-step {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 15px;
-            margin: 10px 0;
-            position: relative;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transform: translateX(-50px) scale(0.9);
-            transition: all 0.5s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            cursor: default;
-        }
-
-        .spiral-step.revealed {
-            opacity: 1;
-            max-height: 200px;
-            transform: translateX(0) scale(1);
-            animation: pulseStep 3s ease-in-out 0.6s infinite;
-        }
-
-        .spiral-step.teaser {
-            opacity: 0.3;
-            max-height: 80px;
-            transform: translateX(0) scale(0.98);
-            cursor: pointer;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
-            border: 3px dashed rgba(102, 126, 234, 0.4);
-            position: relative;
-        }
-
-        .spiral-step.teaser::before {
-            content: "👆 Click to reveal";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(102, 126, 234, 0.9);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-            animation: float 2s ease-in-out infinite;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-            50% { transform: translate(-50%, -50%) translateY(-5px); }
-        }
-
-        .spiral-step.teaser:hover {
-            opacity: 0.5;
-            transform: translateX(0) scale(1);
-            border-color: rgba(102, 126, 234, 0.7);
-        }
-
-        .spiral-step.teaser:hover::before {
-            background: rgba(102, 126, 234, 1);
-        }
-
-        @keyframes pulseStep {
-            0%, 100% { 
-                transform: translateX(0) scale(1); 
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            }
-            50% { 
-                transform: translateX(0) scale(1.03); 
-                box-shadow: 0 6px 25px rgba(118, 75, 162, 0.4);
-            }
-        }
-
-        .spiral-step-icon {
-            font-size: 2.5em;
-            display: inline-block;
-            margin-right: 15px;
-        }
-
-        .spiral-step.revealed .spiral-step-icon {
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .spiral-step-content {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .spiral-step-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #333;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .spiral-step-subtitle {
-            font-size: 1em;
-            color: #666;
-            font-style: italic;
-        }
-
-        .spiral-arrow {
-            text-align: center;
-            font-size: 3em;
-            color: white;
-            margin: -5px 0;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s ease;
-        }
-
-        .spiral-arrow.revealed {
-            opacity: 1;
-            max-height: 100px;
-            animation: bounce 1.5s ease-in-out 0.5s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
-        }
-
-        .spiral-loop {
-            text-align: center;
-            margin-top: 20px;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            color: white;
-            font-size: 1.3em;
-            font-weight: bold;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            border: 3px dashed rgba(255, 255, 255, 0.5);
-        }
-
-        .spiral-loop.revealed {
-            opacity: 1;
-            max-height: 200px;
-            animation: loopPulse 2s ease-in-out 0.5s infinite;
-        }
-
-        @keyframes loopPulse {
-            0%, 100% { 
-                transform: scale(1); 
-                border-color: rgba(255, 255, 255, 0.5);
-                box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
-            }
-            50% { 
-                transform: scale(1.05); 
-                border-color: rgba(255, 255, 255, 0.9);
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            }
-        }
-
-        .spiral-loop-icon {
-            font-size: 2em;
-            display: inline-block;
-            animation: rotate360 3s linear infinite;
-        }
-
-        @keyframes rotate360 {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .spiral-loop-arrow {
-            text-align: center;
-            font-size: 3em;
-            color: white;
-            margin-top: 15px;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.5s ease;
-        }
-
-        .spiral-loop-arrow.revealed {
-            opacity: 1;
-            max-height: 100px;
-            animation: bounceUp 1.5s ease-in-out 0.5s infinite;
-        }
-
-        @keyframes bounceUp {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
 
         /* Truth Reveal Button Styles */
         .truth-reveal-button {
@@ -1436,6 +1189,12 @@
         <div class="section active" data-section="1">
             <h2><span class="icon">🧠</span> <span data-translate="section1_title">The Setup: Your Brain is Being "Reward Hacked"</span></h2>
             
+            <!-- Student Name Input -->
+            <div class="interactive-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-color: #4caf50; text-align: center; padding: 25px;">
+                <h3 style="color: #2e7d32; margin-bottom: 15px;" data-translate="section1_name_title">👋 Welcome! What's your name?</h3>
+                <input type="text" id="studentNameInput" placeholder="Enter your first and last name" style="font-size: 1.1em; padding: 12px 20px; border-radius: 10px; border: 2px solid #4caf50; width: 100%; max-width: 400px; text-align: center;" oninput="userData.studentName = this.value.trim()">
+            </div>
+
             <!-- Sticky Headline -->
             <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; box-shadow: 0 8px 20px rgba(238, 90, 111, 0.4);">
                 <p style="font-size: 1.8em; font-weight: bold; margin: 0; line-height: 1.3;" data-translate="section1_headline">
@@ -1684,62 +1443,6 @@
                 regular stuff anymore. That's when anxiety and feeling down become your new normal.</p>
             </div>
 
-            <!-- ANIMATED DOWNWARD SPIRAL -->
-            <div class="spiral-container">
-                <h3 class="spiral-title" data-translate="section3_glitch_spiral_title">The Downward Spiral</h3>
-                <p class="spiral-instruction">
-                    <strong>👆 Click each step to reveal the cycle</strong>
-                </p>
-                
-                <div class="spiral-steps">
-                    <div class="spiral-step teaser" onclick="revealSpiralStep(this, 0)" data-step="0">
-                        <span class="spiral-step-icon">📱</span>
-                        <div class="spiral-step-content">
-                            <span class="spiral-step-title" data-translate="section3_glitch_spiral_1">You scroll for instant rewards</span>
-                            <span class="spiral-step-subtitle" data-translate="section3_glitch_spiral_1b">Likes, hearts, dopamine rush!</span>
-                        </div>
-                    </div>
-
-                    <div class="spiral-arrow">↓</div>
-
-                    <div class="spiral-step" data-step="1">
-                        <span class="spiral-step-icon">🧠</span>
-                        <div class="spiral-step-content">
-                            <span class="spiral-step-title" data-translate="section3_glitch_spiral_2">Your brain gets overwhelmed</span>
-                            <span class="spiral-step-subtitle" data-translate="section3_glitch_spiral_2b">Turns down its "feel good" receptors</span>
-                        </div>
-                    </div>
-
-                    <div class="spiral-arrow">↓</div>
-
-                    <div class="spiral-step" data-step="2">
-                        <span class="spiral-step-icon">😐</span>
-                        <div class="spiral-step-content">
-                            <span class="spiral-step-title" data-translate="section3_glitch_spiral_3">Real life feels boring now</span>
-                            <span class="spiral-step-subtitle" data-translate="section3_glitch_spiral_3b">Nothing gives you that rush anymore</span>
-                        </div>
-                    </div>
-
-                    <div class="spiral-arrow">↓</div>
-
-                    <div class="spiral-step" data-step="3">
-                        <span class="spiral-step-icon">📱</span>
-                        <div class="spiral-step-content">
-                            <span class="spiral-step-title" data-translate="section3_glitch_spiral_4">So you scroll even MORE</span>
-                            <span class="spiral-step-subtitle" data-translate="section3_glitch_spiral_4b">Chasing that feeling you used to get</span>
-                        </div>
-                    </div>
-
-                    <div class="spiral-arrow">↓</div>
-                </div>
-
-                <div class="spiral-loop">
-                    <span class="spiral-loop-icon">🔄</span>
-                    <span data-translate="section3_glitch_spiral_5">The Cycle Repeats... Getting Worse Each Time</span>
-                </div>
-
-                <div class="spiral-loop-arrow">↑</div>
-            </div>
 
             <div class="interactive-box">
                 <h3 data-translate="section3_glitch_assess_title">Self-Assessment: How Bad is Your Brain Rot?</h3>
@@ -1971,9 +1674,7 @@
                 <div id="resetFeedback" style="margin-top: 15px; color: #4caf50; font-weight: bold;"></div>
             </div>
 
-            <div class="interactive-box">
-                <button class="button button-secondary" onclick="completeModule()"><span data-translate="section6_complete_btn">✅ Complete Module</span></button>
-            </div>
+
 
             <!-- Deep Reflection Questions - Choose One -->
             <div class="interactive-box" style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); border-color: #5e35b1; border-width: 4px;">
@@ -2053,7 +1754,7 @@
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-                <button class="button" onclick="generateCertificatePDF(prompt('Please enter your name for the certificate:') || 'Student')" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); font-size: 1.2em; padding: 15px 40px; margin-left: 15px;">
+                <button class="button" onclick="generateCertificatePDF(userData.studentName || 'Student')" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); font-size: 1.2em; padding: 15px 40px; margin-left: 15px;">
                     <span data-translate="section6_download_pdf">�️ Print My Certificate</span>
                 </button>
             </div>
@@ -2084,7 +1785,8 @@
             pollSelection: null,
             pollSelected: false,
             truthRevealed: false,
-            dopamineSliderValue: null
+            dopamineSliderValue: null,
+            studentName: ''
         };
 
         // Validate School ID - disabled in demo mode
@@ -3529,56 +3231,6 @@
             }
         }
 
-        // Spiral reveal functionality
-        let currentSpiralStep = 0;
-        const totalSpiralSteps = 4;
-
-        function revealSpiralStep(element, stepIndex) {
-            // Only allow revealing in order
-            if (stepIndex !== currentSpiralStep) return;
-            
-            // Remove teaser state and reveal the clicked step
-            element.classList.remove('teaser');
-            element.classList.add('revealed');
-            element.onclick = null;
-            
-            // Get all arrows
-            const arrows = document.querySelectorAll('.spiral-container .spiral-arrow');
-            const steps = document.querySelectorAll('.spiral-container .spiral-step');
-            
-            // Reveal the arrow after this step
-            if (arrows[stepIndex]) {
-                setTimeout(() => {
-                    arrows[stepIndex].classList.add('revealed');
-                }, 300);
-            }
-            
-            currentSpiralStep++;
-            
-            // Show next step as teaser
-            if (currentSpiralStep < totalSpiralSteps) {
-                const nextStep = steps[currentSpiralStep];
-                if (nextStep) {
-                    setTimeout(() => {
-                        nextStep.classList.add('teaser');
-                        nextStep.onclick = function() {
-                            revealSpiralStep(this, currentSpiralStep);
-                        };
-                    }, 500);
-                }
-            } else {
-                // All steps revealed, show the loop
-                setTimeout(() => {
-                    document.querySelector('.spiral-loop').classList.add('revealed');
-                    setTimeout(() => {
-                        document.querySelector('.spiral-loop-arrow').classList.add('revealed');
-                    }, 300);
-                }, 500);
-            }
-            
-            saveProgress();
-        }
-
         function toggleCheck(element) {
             element.classList.toggle('checked');
             updateRotScore();
@@ -3716,9 +3368,8 @@
             // Confetti effect
             celebrate();
 
-            // Prompt for student name and generate certificate
-            const studentName = prompt("Please enter your name for the certificate:") || "Student";
-            generateCertificatePDF(studentName);
+            // Generate certificate using stored student name
+            generateCertificatePDF(userData.studentName || 'Student');
         }
 
         // Generate PDF Action Plan
