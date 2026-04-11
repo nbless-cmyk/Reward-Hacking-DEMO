@@ -1612,6 +1612,24 @@
                 <div class="slot-machine-title" data-translate="section3_instant_machine_title">📱 The Instant Gratification Machine</div>
                 <p class="slot-machine-subtitle" data-translate="section3_instant_machine_subtitle">Tap to get your dopamine hit - just like scrolling social media!</p>
                 
+                <!-- SIMULATION MODE: Hacker Control Panel -->
+                <div style="background: rgba(0, 0, 0, 0.4); border: 2px solid #ffd700; border-radius: 12px; padding: 20px; margin-bottom: 25px; text-align: left;">
+                    <h3 style="color: #ffd700; margin-top: 0; font-size: 1.3em;">🎛️ Simulation Mode: You Are The Algorithm!</h3>
+                    <p style="color: #fff; font-size: 1em; opacity: 0.9; margin-bottom: 15px;">
+                        Apps control the <strong>Reward Ratio</strong> to keep you hooked. Move this slider to test different win chances. 
+                        <strong>Pro Tip:</strong> Try playing at 100% (always win) vs. 50% (unpredictable). Notice how unpredictability actually makes you want to tap more!
+                    </p>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9em; font-weight: bold; margin-bottom: 8px;">
+                        <span style="color: #ff6b6b;">0% (Never Win)</span>
+                        <span style="color: #4caf50;">~50% (Most Addictive)</span>
+                        <span style="color: #ff6b6b;">100% (Too Easy)</span>
+                    </div>
+                    <input type="range" id="rewardRatioSlider" min="0" max="100" value="85" style="width: 100%; cursor: pointer;" oninput="document.getElementById('rewardRatioValue').textContent = this.value">
+                    <div style="text-align: center; color: #ffd700; font-size: 1.2em; font-weight: bold; margin-top: 10px;">
+                        Win Chance: <span id="rewardRatioValue">85</span>%
+                    </div>
+                </div>
+
                 <div class="dopamine-meter">
                     <div class="dopamine-label" id="dopamineLabel" data-translate="section3_instant_machine_dopamine_label">💥 Dopamine Rush Meter</div>
                     <div class="dopamine-bar-container">
@@ -1641,17 +1659,13 @@
 
                 <div class="slot-explanation" id="slotExplanation">
                     <div id="slotExplanationPart1" data-translate-html="section3_explanation_part1">
-                        <strong>💡 What's Happening Here:</strong> Notice how you get rewarded <em>almost every time</em>? 
-                        That's the same trick slot machines use - <strong>random rewards</strong> are super addictive. 
-                        Social media copied this from casinos! Each tap gives you instant validation through likes ❤️, 
-                        hearts 💖, and notifications 🔥, which makes your brain release "feel good" chemicals.
+                        <strong>💡 What's Happening Here:</strong> Notice how you get rewarded <em>almost every time</em>? That's the same trick slot machines use - <strong>random rewards</strong> are super addictive. Social media copied this from casinos!
                     </div>
                     <div id="slotExplanationPart2" style="display: none;" data-translate-html="section3_explanation_part2">
-                        <strong>Compare this to real life:</strong> Homework 📚, practice 🎸, or exercise ⚽ take WEEKS to show results. 
-                        Your brain evolved to want <strong>rewards RIGHT NOW</strong> instead of later. 
-                        When instant rewards are always available (your phone), the hard-working part of your brain 
-                        literally loses the battle. That's why effort feels pointless - it's not that you're lazy, 
-                        your brain has been hacked to prefer easy wins.
+                        <strong>🧠 The Brain Hack:</strong> Each tap gives you instant validation through likes ❤️, hearts 💖, and notifications 🔥, which makes your brain release "feel good" chemicals.
+                    </div>
+                    <div id="slotExplanationPart3" style="display: none;" data-translate-html="section3_explanation_part3">
+                        <strong>⚡ Compare to real life:</strong> Homework 📚, practice 🎸, or exercise ⚽ take WEEKS to show results. Your brain evolved to want <strong>rewards RIGHT NOW</strong>. When instant rewards are always available, effort feels pointless.
                     </div>
                 </div>
             </div>
@@ -2039,8 +2053,8 @@
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-                <button class="button" onclick="generatePDF()" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); font-size: 1.2em; padding: 15px 40px; margin-left: 15px;">
-                    <span data-translate="section6_download_pdf">📄 Download My Action Plan PDF</span>
+                <button class="button" onclick="generateCertificatePDF(prompt('Please enter your name for the certificate:') || 'Student')" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); font-size: 1.2em; padding: 15px 40px; margin-left: 15px;">
+                    <span data-translate="section6_download_pdf">�️ Print My Certificate</span>
                 </button>
             </div>
 
@@ -2388,13 +2402,16 @@
             
             // Stop reels one by one with dramatic effect
             setTimeout(() => {
-                // Decide if this will be a jackpot (40% chance of 3 in a row)
-                const isJackpotPull = Math.random() < 0.40;
-                let jackpotSymbol = null;
-                if (isJackpotPull) {
-                    // Pick a random social media symbol for the jackpot
-                    jackpotSymbol = socialMediaSymbols[Math.floor(Math.random() * socialMediaSymbols.length)];
-                    console.log('JACKPOT PULL! Symbol:', jackpotSymbol); // Debug log
+                const ratioSlider = document.getElementById('rewardRatioSlider');
+                const winChance = ratioSlider ? parseInt(ratioSlider.value, 10) / 100 : 0.85;
+
+                // Decide if this is a win based EXACTLY on the slider ratio
+                const isWin = Math.random() < winChance;
+                let winningSymbol = null;
+                
+                // If they win, pick ONE symbol that will show on all 3 reels
+                if (isWin) {
+                    winningSymbol = socialMediaSymbols[Math.floor(Math.random() * socialMediaSymbols.length)];
                 }
                 
                 reels.forEach((reel, index) => {
@@ -2404,29 +2421,23 @@
                         reel.classList.remove('spinning');
                         const content = reel.querySelector('.slot-reel-content');
                         
-                        if (isJackpotPull) {
-                            // Force jackpot - all reels show the same symbol
-                            content.textContent = jackpotSymbol;
-                            console.log(`Reel ${index + 1} set to:`, jackpotSymbol); // Debug log
+                        if (isWin) {
+                            // A win is ALWAYS 3-in-a-row
+                            content.textContent = winningSymbol;
                         } else {
-                            // Normal random generation
-                            // 85% chance of social media reward (instant gratification!)
-                            // 10% chance of random mismatch
-                            // 5% chance of real-life task (rare and unrewarding)
-                            const rand = Math.random();
+                            // A loss means picking random symbols, making SURE they don't accidentally match 3-in-a-row
+                            let randomSymbol;
+                            // For reel 3, if reel 1 and 2 matched perfectly, force it to be something else so it's a loss
+                            do {
+                                // Mix in some boring real-life tasks to emphasize why "losing" feels dull
+                                if (Math.random() < 0.3) {
+                                    randomSymbol = rareTaskSymbols[Math.floor(Math.random() * rareTaskSymbols.length)];
+                                } else {
+                                    randomSymbol = socialMediaSymbols[Math.floor(Math.random() * socialMediaSymbols.length)];
+                                }
+                            } while (index === 2 && randomSymbol === reels[0].querySelector('.slot-reel-content').textContent && randomSymbol === reels[1].querySelector('.slot-reel-content').textContent);
                             
-                            if (rand < 0.85) {
-                                // Social media win!
-                                content.textContent = socialMediaSymbols[Math.floor(Math.random() * socialMediaSymbols.length)];
-                            } else if (rand < 0.95) {
-                                // Mismatch
-                                content.textContent = Math.random() > 0.5 
-                                    ? socialMediaSymbols[Math.floor(Math.random() * socialMediaSymbols.length)]
-                                    : rareTaskSymbols[Math.floor(Math.random() * rareTaskSymbols.length)];
-                            } else {
-                                // Rare real-life task
-                                content.textContent = rareTaskSymbols[Math.floor(Math.random() * rareTaskSymbols.length)];
-                            }
+                            content.textContent = randomSymbol;
                         }
                     }, 400 * (index + 1));
                 });
@@ -2443,12 +2454,11 @@
                     const symbol1 = symbols[0];
                     const symbol2 = symbols[1];
                     const symbol3 = symbols[2];
-                    const isJackpot = (symbol1 === symbol2 && symbol2 === symbol3 && socialMediaSymbols.includes(symbol1));
-                    console.log('Is Jackpot?', isJackpot, 'AllSocialMedia?', allSocialMedia); // Debug log
+                    const isWin = (symbol1 === symbol2 && symbol2 === symbol3 && socialMediaSymbols.includes(symbol1));
                     
                     result.style.display = 'flex';
                     
-                    if (allSocialMedia) {
+                    if (isWin) {
                         // INSTANT GRATIFICATION WIN!
                         dopamineHits++;
                         
@@ -2483,56 +2493,31 @@
                             // Normal win
                             result.className = 'slot-result instant-win';
                             
-                            // Check for 3-in-a-row JACKPOTS with special effects!
-                            if (isJackpot) {
-                                // JACKPOT! 3 in a row!
-                                if (symbol1 === '💰') {
-                                    result.innerHTML = '💰💰💰 <strong>MONEY JACKPOT!</strong> 💰💰💰<br>Money pouring from the slot machine! This is how Vegas keeps you playing!';
-                                    createMoneyStream();
-                                    createDopamineShower();
-                                } else if (symbol1 === '❤️' || symbol1 === '💖') {
-                                    result.innerHTML = '❤️❤️❤️ <strong>HEART JACKPOT!</strong> ❤️❤️❤️<br>Hearts everywhere! This is the validation you crave from social media!';
-                                    createHeartStream();
-                                    createDopamineShower();
-                                } else if (symbol1 === '🐱') {
-                                    result.innerHTML = '🐱🐱🐱 <strong>CAT JACKPOT!</strong> 🐱🐱🐱<br>Cat emojis exploding! The internet\'s favorite currency!';
-                                    createCatEmojiStream();
-                                    createDopamineShower();
-                                } else if (symbol1 === '👁️') {
-                                    result.innerHTML = '👁️👁️👁️ <strong>VIEWS JACKPOT!</strong> 👁️👁️👁️<br>Everyone is watching! Your post just went VIRAL!';
-                                    createEyeballStream();
-                                    createDopamineShower();
-                                } else {
-                                    result.innerHTML = `${symbol1}${symbol1}${symbol1} <strong>TRIPLE JACKPOT!</strong> ${symbol1}${symbol1}${symbol1}<br>✨ INSANE! Three matching symbols - your brain is FLOODED with dopamine!`;
-                                    createDopamineShower();
-                                    createLikeBurst();
-                                }
+                            // 3-in-a-row JACKPOTS with special effects!
+                            if (symbol1 === '💰') {
+                                result.innerHTML = '💰💰💰 <strong>MONEY JACKPOT!</strong> 💰💰💰<br>Money pouring from the slot machine! This is how Vegas keeps you playing!';
+                                createMoneyStream();
+                                createDopamineShower();
+                            } else if (symbol1 === '❤️' || symbol1 === '💖') {
+                                result.innerHTML = '❤️❤️❤️ <strong>HEART JACKPOT!</strong> ❤️❤️❤️<br>Hearts everywhere! This is the validation you crave from social media!';
+                                createHeartStream();
+                                createDopamineShower();
+                            } else if (symbol1 === '🐱') {
+                                result.innerHTML = '🐱🐱🐱 <strong>CAT JACKPOT!</strong> 🐱🐱🐱<br>Cat emojis exploding! The internet\'s favorite currency!';
+                                createCatEmojiStream();
+                                createDopamineShower();
+                            } else if (symbol1 === '👁️') {
+                                result.innerHTML = '👁️👁️👁️ <strong>VIEWS JACKPOT!</strong> 👁️👁️👁️<br>Everyone is watching! Your post just went VIRAL!';
+                                createEyeballStream();
+                                createDopamineShower();
                             } else {
-                                // Regular win messages
-                                const messages = [
-                                    '🎉 INSTANT WIN! Your brain just released the same "feel good" chemical you get from eating - but you did NOTHING!',
-                                    '💥 BOOM! That felt AMAZING, right? Your brain got tricked into thinking you just accomplished something real!',
-                                    '✨ JACKPOT! Random rewards are THE most addictive. Slot machines + social apps use the exact same trick!',
-                                    '🔥 YES! Your brain\'s reward center just overpowered the part that plans and works hard. Easy wins every time!',
-                                    '💖 PERFECTION! This is why you can\'t stop scrolling - surprise rewards make your brain crave MORE!'
-                                ];
-                                result.innerHTML = messages[Math.floor(Math.random() * messages.length)];
-                                
-                                // Dopamine shower and burst
+                                result.innerHTML = `${symbol1}${symbol1}${symbol1} <strong>TRIPLE JACKPOT!</strong> ${symbol1}${symbol1}${symbol1}<br>✨ INSANE! Three matching symbols - your brain is FLOODED with dopamine!`;
                                 createDopamineShower();
                                 createLikeBurst();
                             }
                             
                             updateDopamineBar(dopamineHits * 10);
                         }
-                        
-                    } else if (hasSocialMedia && !hasTask) {
-                        // Partial social media win
-                        dopamineHits++;
-                        result.className = 'slot-result instant-win';
-                        result.innerHTML = '� Nice! Got some likes! Not a perfect match but still feels good!';
-                        createLikeBurst();
-                        updateDopamineBar(dopamineHits * 10);
                         
                     } else if (hasTask) {
                         // Real life task appeared - feels empty
@@ -2548,7 +2533,7 @@
                     } else {
                         // Mixed/loss
                         result.className = 'slot-result lose';
-                        result.innerHTML = '� Meh. No dopamine hit this time. But keep tapping - the next one will feel GREAT!';
+                        result.innerHTML = '👎 Not a match. No dopamine hit this time. But keep tapping - the next one will feel GREAT!';
                     }
                     
                     counter.textContent = `${translations[currentLanguage].section3_instant_machine_counter_taps} ${slotPulls} | ${translations[currentLanguage].section3_instant_machine_counter_hits} ${dopamineHits * 10}`;
@@ -2565,7 +2550,7 @@
                         button.textContent = translations[currentLanguage].section3_instant_machine_button || "👆 TAP FOR INSTANT REWARD!";
                     }
                     
-                    // Show explanation after 3 taps, swap to part 2 after 4 taps
+                    // Show explanation after 3 taps, swap to part 2 after 4 taps, part 3 after 5 taps
                     if (slotPulls === 3) {
                         const explanation = document.getElementById('slotExplanation');
                         if (explanation) {
@@ -2577,6 +2562,13 @@
                         if (part1 && part2) {
                             part1.style.display = 'none';
                             part2.style.display = 'block';
+                        }
+                    } else if (slotPulls === 5) {
+                        const part2 = document.getElementById('slotExplanationPart2');
+                        const part3 = document.getElementById('slotExplanationPart3');
+                        if (part2 && part3) {
+                            part2.style.display = 'none';
+                            part3.style.display = 'block';
                         }
                     }
                     
@@ -2709,8 +2701,9 @@
                 section3_burnout_msg4: "🚫 <strong>SYSTEM OVERLOAD!</strong><br>No natural activity has a \"keep going forever\" button. But apps do. Your brain wasn't built for this. Now you're feeling that empty, hollow sensation that comes after a 3-hour scroll session.",
                 section3_burnout_tap: "😑 Another tap... but you feel nothing. Your brain is numb. This is burnout.",
                 section3_crash_msg: "💀 <strong>CRASH!</strong> You scrolled too much with no stopping point. Your brain shut down. This is what \"doom scrolling\" feels like.",
-                section3_explanation_part1: "<strong>💡 What's Happening Here:</strong> Notice how you get rewarded <em>almost every time</em>? That's the same trick slot machines use - <strong>random rewards</strong> are super addictive. Social media copied this from casinos! Each tap gives you instant validation through likes ❤️, hearts 💖, and notifications 🔥, which makes your brain release \"feel good\" chemicals.",
-                section3_explanation_part2: "<strong>Compare this to real life:</strong> Homework 📚, practice 🎸, or exercise ⚽ take WEEKS to show results. Your brain evolved to want <strong>rewards RIGHT NOW</strong> instead of later. When instant rewards are always available (your phone), the hard-working part of your brain literally loses the battle. That's why effort feels pointless - it's not that you're lazy, your brain has been hacked to prefer easy wins.",
+                section3_explanation_part1: "<strong>💡 What's Happening Here:</strong> Notice how you get rewarded <em>almost every time</em>? That's the same trick slot machines use - <strong>random rewards</strong> are super addictive. Social media copied this from casinos!",
+                section3_explanation_part2: "<strong>🧠 The Brain Hack:</strong> Each tap gives you instant validation through likes ❤️, hearts 💖, and notifications 🔥, which makes your brain release \"feel good\" dopamine chemicals immediately.",
+                section3_explanation_part3: "<strong>⚡ Compare this to real life:</strong> Homework 📚, practice 🎸, or exercise ⚽ take WEEKS to show results. Your brain evolved to want <strong>rewards RIGHT NOW</strong>. When instant rewards are your new normal, effort feels pointless and the hard-working part of your brain literally loses the battle.",
                 section3_score_low: "You checked {0} out of {1}. Your brain is holding up better than most—but stay aware.",
                 section3_score_med: "You checked {0} out of {1}. The glitch is real—you're feeling it. Time to take action.",
                 section3_score_high: "You checked {0} out of {1}. Heavy brain rot detected. This is urgent—your reward system is seriously compromised.",
@@ -2819,7 +2812,7 @@
                 section6_badge_p1: "You've completed <strong>The Brain vs. The App</strong> module!",
                 section6_badge_p2: "You now understand how reward hacking works, why your brain feels \"glitchy,\" and most importantly—you have the tools to reverse-engineer your own reward system. Remember: <strong>you're not broken. You've just been hacked.</strong> Now you know how to hack back.",
                 section6_badge_remember: "<strong>Remember:</strong> Full recovery takes 3–12 months, but every day you practice these strategies, you're <strong>strengthening brain connections</strong> and weakening the hijacked pathways. You're literally rebuilding the link between your decision-making center and your natural reward system.",
-                section6_download_pdf: "📄 Download My Action Plan PDF",
+                section6_download_pdf: "�️ Print My Certificate",
                 section6_prev_btn: "← Previous",
                 
                 // Alerts & Messages
@@ -2917,8 +2910,9 @@
                 section3_instant_machine_dopamine_label: "💥 Medidor de Golpe de Dopamina",
                 section3_instant_machine_button: "👆 ¡TOCA PARA RECOMPENSA INSTANTÁNEA!",
                 section3_instant_machine_counter: "Toques: {taps} | Golpes de Dopamina: {hits}",
-                section3_explanation_part1: "<strong>💡 Lo Que Está Pasando Aquí:</strong> ¿Notas cómo eres recompensado <em>casi siempre</em>? Ese es el mismo truco que usan las máquinas tragamonedas - las <strong>recompensas aleatorias</strong> son súper adictivas. ¡Las redes sociales copiaron esto de los casinos! Cada toque te da validación instantánea a través de me gusta ❤️, corazones 💖 y notificaciones 🔥, lo que hace que tu cerebro libere químicos de \"sentirse bien\".",
-                section3_explanation_part2: "<strong>Compara esto con la vida real:</strong> La tarea 📚, la práctica 🎸 o el ejercicio ⚽ tardan SEMANAS en mostrar resultados. Tu cerebro evolucionó para querer recompensas AHORA MISMO en lugar de después. Cuando las recompensas instantáneas están siempre disponibles (tu teléfono), la parte trabajadora de tu cerebro literalmente pierde la batalla. Por eso el esfuerzo se siente inútil - no es que seas flojo, tu cerebro ha sido hackeado para preferir las victorias fáciles.",
+                section3_explanation_part1: "<strong>💡 Lo Que Está Pasando Aquí:</strong> ¿Notas cómo eres recompensado <em>casi siempre</em>? Ese es el mismo truco que usan las máquinas tragamonedas - las <strong>recompensas aleatorias</strong> son súper adictivas. ¡Las redes sociales copiaron esto de los casinos!",
+                section3_explanation_part2: "<strong>🧠 El Hackeo Cerebral:</strong> Cada toque te da validación instantánea a través de me gusta ❤️, corazones 💖 y notificaciones 🔥, lo que hace que tu cerebro libere químicos de \"sentido del bienestar\" como la dopamina inmediatamente.",
+                section3_explanation_part3: "<strong>⚡ Compara esto con la vida real:</strong> La tarea 📚, la práctica 🎸 o el ejercicio ⚽ tardan SEMANAS en mostrar resultados. Tu cerebro evolucionó para querer <strong>recompensas AHORA MISMO</strong>. Cuando las recompensas instantáneas son tu nueva normalidad, el esfuerzo se siente inútil y la parte de tu cerebro que trabaja duro literalmente pierde la batalla.",
                 section3_glitch_broken_title: "Tu Motivación Está Rota:",
                 section3_glitch_broken_p: "Tu cerebro piensa: <em>\"¿Por qué debería esforzarme en la tarea, aprender un instrumento o practicar un deporte cuando puedo simplemente tocar esta pantalla y sentirme bien instantáneamente?\"</em> Por eso ya no puedes concentrarte. Tu cerebro ha aprendido que el esfuerzo no tiene sentido cuando las recompensas instantáneas están a un toque de distancia.",
                 section3_glitch_boring_title: "Por Qué Todo Se Siente Aburrido:",
@@ -3065,7 +3059,7 @@
                 section6_badge_p1: "¡Has completado el módulo <strong>El Cerebro vs. La App</strong>!",
                 section6_badge_p2: "Ahora entiendes cómo funciona el hackeo de recompensas, por qué tu cerebro se siente \"defectuoso\", y lo más importante—tienes las herramientas para hacer ingeniería inversa de tu propio sistema de recompensas. Recuerda: <strong>no estás roto. Solo has sido hackeado.</strong> Ahora sabes cómo hackear de vuelta.",
                 section6_badge_remember: "<strong>Recuerda:</strong> La recuperación completa toma 3–12 meses, pero cada día que practicas estas estrategias, estás <strong>fortaleciendo las conexiones cerebrales</strong> y debilitando las vías secuestradas. Literalmente estás reconstruyendo el vínculo entre tu centro de toma de decisiones y tu sistema de recompensas natural.",
-                section6_download_pdf: "📄 Descargar Mi Plan de Acción PDF",
+                section6_download_pdf: "�️ Imprimir Mi Certificado",
                 section6_prev_btn: "← Anterior",
                 
                 // Alerts & Messages
@@ -3291,7 +3285,7 @@
                 section6_badge_p1: "Ou fini modil <strong>Sèvo a kont Aplikasyon an</strong>!",
                 section6_badge_p2: "Kounye a ou konprann kijan hake rekonpans fonksyone, poukisa sèvo ou sanble \"defektye\", e pi enpòtan—ou gen zouti yo pou w fè enjeniri envès pwòp sistèm rekonpans ou. Sonje: <strong>ou pa kraze. Yo jis te hake ou.</strong> Kounye a ou konnen kijan pou hake tounen.",
                 section6_badge_remember: "<strong>Sonje:</strong> Rekiperasyon konplè pran 3–12 mwa, men chak jou ou pratike estrateji sa yo, w ap <strong>ranfòse koneksyon sèvo</strong> epi afebli chemen kidnape yo. Ou literalman ap rekonstwi lyen ant sant desizyon ou ak sistèm rekonpans natirèl ou.",
-                section6_download_pdf: "📄 Telechaje Plan Aksyon Mwen PDF",
+                section6_download_pdf: "�️ Enprime Sètifika Mwen",
                 section6_prev_btn: "← Anvan",
                 
                 // Alerts & Messages
@@ -3721,253 +3715,113 @@
             
             // Confetti effect
             celebrate();
+
+            // Prompt for student name and generate certificate
+            const studentName = prompt("Please enter your name for the certificate:") || "Student";
+            generateCertificatePDF(studentName);
         }
 
         // Generate PDF Action Plan
-        function generatePDF() {
+        function generateCertificatePDF(studentName) {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('landscape');
             
+            // Official border
+            doc.setDrawColor(102, 126, 234); // Primary thematic color
+            doc.setLineWidth(3);
+            doc.rect(10, 10, 277, 190);
+            
+            // Inner accent border
+            doc.setDrawColor(240, 147, 251); // Secondary thematic color
+            doc.setLineWidth(1);
+            doc.rect(14, 14, 269, 182);
+
             // Title
-            doc.setFontSize(20);
-            doc.setTextColor(102, 126, 234);
-            doc.text("My Reward Hacking Action Plan", 105, 20, { align: "center" });
-            
-            doc.setFontSize(12);
-            doc.setTextColor(118, 75, 162);
-            doc.text("The Brain vs. The App", 105, 28, { align: "center" });
-            
-            // School ID - not collected in demo mode
-            
-            // Date
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            const date = new Date().toLocaleDateString();
-            doc.text(`Generated: ${date}`, 105, 42, { align: "center" });
-            
-            let yPos = 55;
-            doc.setTextColor(0, 0, 0);
-            
-            // Section 1: Poll Selection
-            if (userData.pollSelection) {
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text("My Current Reality Check", 20, yPos);
-                yPos += 8;
-                
-                doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                const pollLabels = {
-                    foggy: "My brain feels foggy most of the time",
-                    checking: "I can't go 10 minutes without checking my phone",
-                    scroll: "I'd rather scroll than do things I used to love",
-                    unsure: "I'm not sure, but something feels off"
-                };
-                doc.text(`✓ ${pollLabels[userData.pollSelection]}`, 25, yPos);
-                yPos += 12;
-            }
-            
-            // Section 2: Brain Rot Checklist
-            if (userData.contextRot && userData.contextRot.length > 0) {
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text("Brain Rot Self-Assessment", 20, yPos);
-                yPos += 8;
-                
-                doc.setFontSize(10);
-                doc.setTextColor(0, 0, 0);
-                doc.text(`I checked ${userData.contextRot.length} warning signs:`, 25, yPos);
-                yPos += 6;
-                
-                userData.contextRot.forEach((item, index) => {
-                    if (yPos > 270) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    const lines = doc.splitTextToSize(`• ${item}`, 160);
-                    doc.text(lines, 30, yPos);
-                    yPos += lines.length * 5 + 2;
-                });
-                yPos += 6;
-            }
-            
-            // Section 3: Digital Friction Strategies
             doc.setFontSize(14);
+            doc.setTextColor(50, 50, 50);
+            doc.text("NEW YORK STATE PERFORMANCE-BASED DATA ARTIFACT", 148, 25, { align: "center" });
+            doc.text("COMPETENCY-BASED EDUCATION | PORTRAIT OF A GRADUATE", 148, 32, { align: "center" });
+
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Spring Valley High School | The Sovereign Classroom Pilot", 148, 40, { align: "center" });
+            doc.text("East Ramapo Central School District", 148, 46, { align: "center" });
+            
+            // Divider
+            doc.setDrawColor(200, 200, 200);
+            doc.line(40, 52, 257, 52);
+
+            // Module Title
+            doc.setFontSize(22);
             doc.setTextColor(102, 126, 234);
-            if (yPos > 260) {
-                doc.addPage();
-                yPos = 20;
-            }
-            doc.text("My Counter-Hack Strategies", 20, yPos);
-            yPos += 8;
+            doc.text("COMPETENCY VERIFICATION: SYSTEMIC LITERACY", 148, 65, { align: "center" });
             
-            doc.setFontSize(11);
+            doc.setFontSize(16);
+            doc.setTextColor(70, 70, 70);
+            doc.text("Module: Reward Hacking & The Attention Economy", 148, 75, { align: "center" });
+            
+            doc.setFontSize(14);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Verified Skill: Analysis of Behavioral Engineering", 148, 83, { align: "center" });
+
+            // Mastery Demonstration Statement
+            let yPos = 100;
+            doc.setFontSize(12);
             doc.setTextColor(0, 0, 0);
-            
-            if (userData.strategies && userData.strategies.grayscale) {
-                doc.text("✓ Go Grayscale - Turning my phone to black-and-white", 25, yPos);
-                yPos += 7;
-            }
-            
-            if (userData.strategies && userData.strategies.threeTap) {
-                doc.text("✓ The 3-Tap Rule - Moving addictive apps off home screen", 25, yPos);
-                yPos += 7;
-                
-                if (userData.strategies.appsToHide) {
-                    const lines = doc.splitTextToSize(`  Apps to hide: ${userData.strategies.appsToHide}`, 160);
-                    doc.setFontSize(10);
-                    doc.text(lines, 30, yPos);
-                    yPos += lines.length * 5 + 2;
-                    doc.setFontSize(11);
-                }
-            }
-            yPos += 5;
-            
-            // Section 4: Urge Surf Reflection
-            if (userData.urgeSurf && userData.urgeSurf.reflection) {
-                if (yPos > 250) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text("My Urge Surf Experience", 20, yPos);
-                yPos += 8;
-                
-                doc.setFontSize(10);
-                doc.setTextColor(0, 0, 0);
-                const urgeSurfLines = doc.splitTextToSize(userData.urgeSurf.reflection, 160);
-                doc.text(urgeSurfLines, 25, yPos);
-                yPos += urgeSurfLines.length * 5 + 8;
-            }
-            
-            // Section 5: Dopamine Menu
-            if ((userData.dopamineMenu.appetizers && userData.dopamineMenu.appetizers.length > 0) || 
-                (userData.dopamineMenu.entrees && userData.dopamineMenu.entrees.length > 0)) {
-                
-                if (yPos > 240) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text("My Dopamine Menu", 20, yPos);
-                yPos += 8;
-                
-                if (userData.dopamineMenu.appetizers.length > 0) {
-                    doc.setFontSize(12);
-                    doc.setTextColor(76, 175, 80);
-                    doc.text("Appetizers (5 minutes):", 25, yPos);
-                    yPos += 6;
-                    
-                    doc.setFontSize(10);
-                    doc.setTextColor(0, 0, 0);
-                    userData.dopamineMenu.appetizers.forEach(item => {
-                        if (item.trim()) {
-                            if (yPos > 270) {
-                                doc.addPage();
-                                yPos = 20;
-                            }
-                            const lines = doc.splitTextToSize(`• ${item}`, 155);
-                            doc.text(lines, 30, yPos);
-                            yPos += lines.length * 5 + 2;
-                        }
-                    });
-                    yPos += 3;
-                }
-                
-                if (userData.dopamineMenu.entrees.length > 0) {
-                    if (yPos > 260) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    doc.setFontSize(12);
-                    doc.setTextColor(255, 152, 0);
-                    doc.text("Entrees (30+ minutes):", 25, yPos);
-                    yPos += 6;
-                    
-                    doc.setFontSize(10);
-                    doc.setTextColor(0, 0, 0);
-                    userData.dopamineMenu.entrees.forEach(item => {
-                        if (item.trim()) {
-                            if (yPos > 270) {
-                                doc.addPage();
-                                yPos = 20;
-                            }
-                            const lines = doc.splitTextToSize(`• ${item}`, 155);
-                            doc.text(lines, 30, yPos);
-                            yPos += lines.length * 5 + 2;
-                        }
-                    });
-                    yPos += 5;
-                }
-            }
-            
-            // Section 6: 24-Hour Reset Commitment
-            if (userData.reset && (userData.reset.date || userData.reset.goals)) {
-                if (yPos > 240) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text("My 24-Hour Reset Plan", 20, yPos);
-                yPos += 8;
-                
-                if (userData.reset.date) {
-                    doc.setFontSize(11);
-                    doc.setTextColor(0, 0, 0);
-                    const resetDate = new Date(userData.reset.date).toLocaleDateString();
-                    doc.text(`Reset Date: ${resetDate}`, 25, yPos);
-                    yPos += 8;
-                }
-                
-                if (userData.reset.goals) {
-                    doc.setFontSize(11);
-                    doc.text("Activities I'll do instead:", 25, yPos);
-                    yPos += 6;
-                    
-                    doc.setFontSize(10);
-                    const goalsLines = doc.splitTextToSize(userData.reset.goals, 160);
-                    doc.text(goalsLines, 30, yPos);
-                    yPos += goalsLines.length * 5 + 8;
-                }
-            }
-            
-            // Section 7: Deep Reflection
-            if (userData.deepReflection && userData.deepReflection.response) {
-                if (yPos > 220) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                const questionTitle = userData.deepReflection.questionType === 'empathy' 
-                    ? "Deep Reflection: The Empathy Bridge" 
-                    : "Deep Reflection: The Design Challenge";
-                doc.text(questionTitle, 20, yPos);
-                yPos += 8;
-                
-                doc.setFontSize(10);
-                doc.setTextColor(0, 0, 0);
-                const reflectionLines = doc.splitTextToSize(userData.deepReflection.response, 160);
-                doc.text(reflectionLines, 25, yPos);
-                yPos += reflectionLines.length * 5 + 8;
-            }
-            
-            // Footer
-            if (yPos > 250) {
-                doc.addPage();
-                yPos = 20;
-            }
-            yPos = 280;
-            doc.setFontSize(9);
+
+            const masteryText = `${studentName} has successfully deconstructed the mechanics of Variable-Ratio Reinforcement Schedules as applied in modern digital interfaces (CSDF Standard 9-12.DL.7).`;
+            const masteryLines = doc.splitTextToSize(masteryText, 220);
+            doc.text(masteryLines, 148, yPos, { align: "center" });
+            yPos += masteryLines.length * 6 + 15;
+
+            // Performance Indicators
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text("Performance Indicator:", 148, yPos, { align: "center" });
+            yPos += 10;
+
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(12);
+
+            const bullet1 = `${studentName} modeled the relationship between Dopamine Loops and Variable Rewards.`;
+            const lines1 = doc.splitTextToSize(bullet1, 240);
+            doc.text(lines1, 148, yPos, { align: "center" });
+            yPos += lines1.length * 6 + 4;
+
+            const bullet2 = `${studentName} evaluated the Ethical Impact of engagement-based algorithms on human autonomy (CSDF Standard 9-12.IC.1).`;
+            const lines2 = doc.splitTextToSize(bullet2, 240);
+            doc.text(lines2, 148, yPos, { align: "center" });
+            yPos += lines2.length * 6 + 4;
+
+            const bullet3 = `${studentName} demonstrated the Critical Thinking necessary to identify and mitigate manipulative digital architecture.`;
+            const lines3 = doc.splitTextToSize(bullet3, 240);
+            doc.text(lines3, 148, yPos, { align: "center" });
+            yPos += lines3.length * 6 + 12;
+
+            // Optional: Re-add Performance Level 
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(102, 126, 234);
+            doc.text("Performance Level: EXEMPLARY", 148, yPos, { align: "center" });
+            yPos += 14;
+
+            // Checkboxes
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(70, 70, 70);
+            doc.text("[X] Critical Thinker: Identifies and analyzes the invisible structures of the digital world.", 60, yPos);
+            yPos += 8;
+            doc.text("[X] Global Citizen: Understands the social and ethical consequences of technological design.", 60, yPos);
+
+            // Date Signature
+            const date = new Date().toLocaleDateString();
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
             doc.setTextColor(150, 150, 150);
-            doc.text("Remember: Recovery takes 3-12 months. You're rebuilding brain connections every day!", 105, yPos, { align: "center" });
-            doc.text("You're not broken. You've just been hacked. Now you know how to hack back.", 105, yPos + 5, { align: "center" });
+            doc.text(`Generated: ${date}`, 148, 185, { align: "center" });
             
             // Save the PDF
-            doc.save(`My-Reward-Hacking-Action-Plan-${date.replace(/\//g, '-')}.pdf`);
+            window.open(doc.output('bloburl'), '_blank');
             
             // Data submission disabled in demo mode
         }
