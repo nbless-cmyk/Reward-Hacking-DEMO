@@ -3182,7 +3182,9 @@
             const currentSectionEl = document.querySelector(`[data-section="${currentSection}"]`);
             if (!currentSectionEl) return;
             
-            const nextButtons = currentSectionEl.querySelectorAll('.button:not(.button-secondary):not(#truthRevealBtn)');
+            // Only lock/unlock buttons that navigate to the next section
+            // Action buttons (commit, save, certificate) should always remain clickable
+            const nextButtons = currentSectionEl.querySelectorAll('.button[onclick*="nextSection"]');
             // Always keep the truth reveal button enabled
             const truthBtn = document.getElementById('truthRevealBtn');
             if (truthBtn) {
